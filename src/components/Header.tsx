@@ -16,7 +16,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ThemeToggle from "./ThemeToggle";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
-const Header = () => {
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+
+export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
