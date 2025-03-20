@@ -1,27 +1,15 @@
+import { Link } from 'react-router-dom';
+import { FileQuestion, Home, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Header } from '@/components/Header';
 
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { FileQuestion, Home, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
-const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
-
+export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="h-24">
         <Header />
       </header>
-      
+
       <main className="flex-grow flex items-center justify-center py-20 px-4 mt-12">
         <div className="container-narrow text-center">
           <div className="mb-8 flex justify-center">
@@ -29,7 +17,7 @@ const NotFound = () => {
               <FileQuestion size={72} className="text-primary" />
             </div>
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-4">404</h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-4">
             Oops! Page not found
@@ -38,7 +26,7 @@ const NotFound = () => {
             The page you are looking for might have been removed, had its name changed,
             or is temporarily unavailable.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/">
               <Button size="lg" className="gap-2 w-full sm:w-auto">
@@ -58,10 +46,6 @@ const NotFound = () => {
           </div>
         </div>
       </main>
-      
-      <Footer />
     </div>
   );
-};
-
-export default NotFound;
+}
