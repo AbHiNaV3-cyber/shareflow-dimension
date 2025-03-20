@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ThemeToggle from "./ThemeToggle";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { Link } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, FileText, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ThemeToggle from "./ThemeToggle";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-
-//Removed redundant imports
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,16 +24,11 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 0);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
 
   // Get user initial for avatar fallback
   const getUserInitial = () => {
@@ -42,31 +36,25 @@ export default function Header() {
     return user.email.charAt(0).toUpperCase();
   };
 
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "glassmorphism py-3" : "bg-transparent py-5"
-      }`}
-    >
-      <div className="container-wide flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-bold tracking-tight">
-          Mindful<span className="text-primary">Blog</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="font-medium hover:text-primary">Home</Link>
-          <Link to="/category/technology" className="font-medium hover:text-primary">Technology</Link>
-          <Link to="/category/lifestyle" className="font-medium hover:text-primary">Lifestyle</Link>
-          <Link to="/category/health" className="font-medium hover:text-primary">Health</Link>
-        </nav>
-
-        {/* Actions */}
-        <div className="hidden md:flex items-center space-x-4">
-          <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Search">
-            <Search size={20} />
-          </button>
+    <header className={`sticky top-0 z-50 w-full border-b ${
+      isScrolled ? 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60' : 'bg-background'
+    }`}>
+      <nav className="container flex h-14 items-center justify-between">
+        <div className="flex items-center">
+          <Link to="/" className="text-2xl font-bold tracking-tight mr-4">
+            Mindful<span className="text-primary">Blog</span>
+          </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link to="/" className="font-medium hover:text-primary">Home</Link>
+            <Link to="/category/technology" className="font-medium hover:text-primary">Technology</Link>
+            <Link to="/category/lifestyle" className="font-medium hover:text-primary">Lifestyle</Link>
+            <Link to="/category/health" className="font-medium hover:text-primary">Health</Link>
+          </nav>
+        </div>
+        <div className="flex items-center space-x-4">
           <ThemeToggle />
           {user ? (
             <DropdownMenu>
@@ -123,23 +111,20 @@ export default function Header() {
               </Link>
             </div>
           )}
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-expanded={isMobileMenuOpen}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </Button>
+          </div>
         </div>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center space-x-4">
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-expanded={isMobileMenuOpen}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
-        </div>
-      </div>
-
+      </nav>
       {/* Mobile Menu - Fixed positioning instead of absolute */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background/95 backdrop-blur-md z-40 animate-fade-in overflow-y-auto">
@@ -263,5 +248,3 @@ export default function Header() {
     </header>
   );
 }
-
-export default Header;
