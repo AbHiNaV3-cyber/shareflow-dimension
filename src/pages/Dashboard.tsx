@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
@@ -83,14 +82,15 @@ const Dashboard = () => {
 
         if (error) throw error;
         
-        // Fix: Transform the data structure to match the Post interface
         const transformedPosts = (data || []).map(post => ({
           id: post.id,
           title: post.title,
           slug: post.slug,
           published_at: post.published_at,
           created_at: post.created_at,
-          category: post.category ? { name: post.category.name } : null
+          category: post.category && typeof post.category === 'object' 
+            ? { name: post.category.name || 'Uncategorized' }
+            : null
         }));
         
         setPosts(transformedPosts);
@@ -148,7 +148,6 @@ const Dashboard = () => {
 
       if (error) throw error;
 
-      // Update local state
       setPosts(posts.map(post => {
         if (post.id === id) {
           return {
@@ -175,7 +174,6 @@ const Dashboard = () => {
     }
   };
 
-  // Format date for display
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "—";
     const date = new Date(dateString);
@@ -187,7 +185,6 @@ const Dashboard = () => {
   };
 
   if (!user) {
-    // This should redirect in the useEffect, but just in case
     return null;
   }
 

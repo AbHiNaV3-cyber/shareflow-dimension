@@ -42,9 +42,10 @@ const transformPost = async (post: BlogPostDB): Promise<BlogPost> => {
     .select('user_id', { count: 'exact', head: true })
     .eq('post_id', post.id);
 
-  // Fix: Map through the array to extract tag names
+  // Fix: Properly extract tag names by checking the structure
   const tags = tagsData?.map(tag => {
-    if (tag.tags && typeof tag.tags === 'object') {
+    // Check if tags has the expected structure
+    if (tag.tags && typeof tag.tags === 'object' && 'name' in tag.tags) {
       return tag.tags.name;
     }
     return '';
