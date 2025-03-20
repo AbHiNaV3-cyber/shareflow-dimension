@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
@@ -84,13 +85,23 @@ const Dashboard = () => {
         
         const transformedPosts = (data || []).map(post => {
           let categoryName = 'Uncategorized';
+          
           if (post.category) {
+            // Handle different possible formats of the category data
             if (typeof post.category === 'object' && post.category !== null) {
               if (Array.isArray(post.category)) {
-                categoryName = post.category[0]?.name || 'Uncategorized';
-              } else {
+                // If it's an array, try to get the name from the first item
+                const firstCategory = post.category[0];
+                if (firstCategory && typeof firstCategory === 'object' && 'name' in firstCategory) {
+                  categoryName = firstCategory.name || 'Uncategorized';
+                }
+              } else if ('name' in post.category) {
+                // If it's an object with a name property
                 categoryName = post.category.name || 'Uncategorized';
               }
+            } else if (typeof post.category === 'string') {
+              // If it's just a string
+              categoryName = post.category;
             }
           }
           
