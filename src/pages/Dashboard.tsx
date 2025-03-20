@@ -39,6 +39,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 
+// Define proper types for categories to fix type errors
 interface CategoryType {
   name: string;
 }
@@ -95,11 +96,11 @@ const Dashboard = () => {
                 // If it's an array, safely extract the name from the first item if it exists
                 const firstCategory = post.category[0];
                 if (firstCategory && typeof firstCategory === 'object' && firstCategory !== null && 'name' in firstCategory) {
-                  categoryName = firstCategory.name as string || 'Uncategorized';
+                  categoryName = String(firstCategory.name) || 'Uncategorized';
                 }
               } else if ('name' in post.category) {
                 // If it's an object with a name property
-                categoryName = post.category.name as string || 'Uncategorized';
+                categoryName = String(post.category.name) || 'Uncategorized';
               }
             } else if (typeof post.category === 'string') {
               // If it's just a string
