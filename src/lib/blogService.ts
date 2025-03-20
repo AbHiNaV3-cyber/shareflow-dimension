@@ -1,3 +1,4 @@
+
 import { supabase } from './supabase';
 import { BlogPost, Author } from './api';
 import { BlogPostDB, CategoryDB, Profile } from './supabase';
@@ -41,7 +42,13 @@ const transformPost = async (post: BlogPostDB): Promise<BlogPost> => {
     .select('user_id', { count: 'exact', head: true })
     .eq('post_id', post.id);
 
-  const tags = tagsData?.map(tag => tag.tags.name) || [];
+  // Fix: Map through the array to extract tag names
+  const tags = tagsData?.map(tag => {
+    if (tag.tags && typeof tag.tags === 'object') {
+      return tag.tags.name;
+    }
+    return '';
+  }).filter(Boolean) || [];
 
   return {
     id: post.id,
@@ -142,17 +149,31 @@ export const blogService = {
   // Get featured posts (most likes)
   getFeaturedPosts: async (): Promise<BlogPost[]> => {
     try {
-      // Get post IDs ordered by like count
-      const { data: postLikes, error: likesError } = await supabase
-        .from('post_likes')
-        .select('post_id, count')
-        .group('post_id')
-        .order('count', { ascending: false })
-        .limit(4);
+      // Fix: Use count() aggregation instead of group
+      // Get post IDs ordered by like count using a different approach
+      const { data: likeCounts, error: countError } = await supabase
+        .rpc('get_posts_by_like_count', { limit_count: 4 });
 
-      if (likesError) throw likesError;
+      if (countError) {
+        console.error("Error calling RPC function:", countError);
+        // Fallback if the RPC function doesn't exist yet
+        const { data: recentPosts, error } = await supabase
+          .from('posts')
+          .select('*')
+          .is('published_at', 'not.null')
+          .order('published_at', { ascending: false })
+          .limit(4);
+
+        if (error) throw error;
+        
+        const transformedPosts = await Promise.all(
+          (recentPosts || []).map(transformPost)
+        );
+        
+        return transformedPosts;
+      }
       
-      if (!postLikes || postLikes.length === 0) {
+      if (!likeCounts || likeCounts.length === 0) {
         // Fallback: Just get the most recent posts
         const { data: recentPosts, error } = await supabase
           .from('posts')
@@ -171,7 +192,7 @@ export const blogService = {
       }
 
       // Get the actual posts
-      const postIds = postLikes.map(item => item.post_id);
+      const postIds = likeCounts.map(item => item.post_id);
       const { data: posts, error } = await supabase
         .from('posts')
         .select('*')

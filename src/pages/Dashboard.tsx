@@ -82,7 +82,18 @@ const Dashboard = () => {
         const { data, error } = await query;
 
         if (error) throw error;
-        setPosts(data || []);
+        
+        // Fix: Transform the data structure to match the Post interface
+        const transformedPosts = (data || []).map(post => ({
+          id: post.id,
+          title: post.title,
+          slug: post.slug,
+          published_at: post.published_at,
+          created_at: post.created_at,
+          category: post.category ? { name: post.category.name } : null
+        }));
+        
+        setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
         toast({
