@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Search, User, LogOut, FileText, Settings } from "lucide-react";
@@ -16,9 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ThemeToggle from "./ThemeToggle";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+//Removed redundant imports
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +27,6 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -47,7 +43,7 @@ export default function Header() {
   };
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? "glassmorphism py-3" : "bg-transparent py-5"
       }`}
@@ -57,7 +53,7 @@ export default function Header() {
         <Link to="/" className="text-2xl font-bold tracking-tight">
           Mindful<span className="text-primary">Blog</span>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/" className="font-medium hover:text-primary">Home</Link>
@@ -65,7 +61,7 @@ export default function Header() {
           <Link to="/category/lifestyle" className="font-medium hover:text-primary">Lifestyle</Link>
           <Link to="/category/health" className="font-medium hover:text-primary">Health</Link>
         </nav>
-        
+
         {/* Actions */}
         <div className="hidden md:flex items-center space-x-4">
           <button className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Search">
@@ -108,7 +104,7 @@ export default function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={signOut}
                   className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
                 >
@@ -128,13 +124,13 @@ export default function Header() {
             </div>
           )}
         </div>
-        
+
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-4">
           <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-expanded={isMobileMenuOpen}
             aria-label="Toggle menu"
@@ -143,56 +139,56 @@ export default function Header() {
           </Button>
         </div>
       </div>
-      
+
       {/* Mobile Menu - Fixed positioning instead of absolute */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background/95 backdrop-blur-md z-40 animate-fade-in overflow-y-auto">
           <div className="container p-4 flex flex-col h-full">
             <nav className="flex flex-col space-y-4 mb-8">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                to="/category/technology" 
+              <Link
+                to="/category/technology"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Technology
               </Link>
-              <Link 
-                to="/category/lifestyle" 
+              <Link
+                to="/category/lifestyle"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Lifestyle
               </Link>
-              <Link 
-                to="/category/health" 
+              <Link
+                to="/category/health"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Health
               </Link>
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
               </Link>
             </nav>
-            
+
             <div className="mt-auto pb-8">
               <div className="flex items-center justify-between mb-4">
                 <button className="flex items-center space-x-2 p-3 hover:bg-accent rounded-md font-medium transition-colors w-full">
@@ -200,7 +196,7 @@ export default function Header() {
                   <span>Search</span>
                 </button>
               </div>
-              
+
               {user ? (
                 <div className="space-y-3">
                   <div className="flex items-center p-3">
@@ -215,31 +211,31 @@ export default function Header() {
                       <p className="text-sm text-muted-foreground">Logged in</p>
                     </div>
                   </div>
-                  
+
                   <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start" size="sm">
                       <User size={16} className="mr-2" />
                       Profile
                     </Button>
                   </Link>
-                  
+
                   <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start" size="sm">
                       <FileText size={16} className="mr-2" />
                       Dashboard
                     </Button>
                   </Link>
-                  
+
                   <Link to="/editor" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start" size="sm">
                       <Settings size={16} className="mr-2" />
                       New Post
                     </Button>
                   </Link>
-                  
-                  <Button 
-                    variant="destructive" 
-                    className="w-full justify-start mt-2" 
+
+                  <Button
+                    variant="destructive"
+                    className="w-full justify-start mt-2"
                     size="sm"
                     onClick={() => {
                       signOut();
@@ -266,6 +262,6 @@ export default function Header() {
       )}
     </header>
   );
-};
+}
 
 export default Header;
