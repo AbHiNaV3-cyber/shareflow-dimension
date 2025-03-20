@@ -39,15 +39,17 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 
+interface CategoryType {
+  name: string;
+}
+
 interface Post {
   id: string;
   title: string;
   slug: string;
   published_at: string | null;
   created_at: string;
-  category: {
-    name: string;
-  } | null;
+  category: CategoryType | null;
 }
 
 const Dashboard = () => {
@@ -90,14 +92,14 @@ const Dashboard = () => {
             // Handle different possible formats of the category data
             if (typeof post.category === 'object' && post.category !== null) {
               if (Array.isArray(post.category)) {
-                // If it's an array, try to get the name from the first item
+                // If it's an array, safely extract the name from the first item if it exists
                 const firstCategory = post.category[0];
-                if (firstCategory && typeof firstCategory === 'object' && 'name' in firstCategory) {
-                  categoryName = firstCategory.name || 'Uncategorized';
+                if (firstCategory && typeof firstCategory === 'object' && firstCategory !== null && 'name' in firstCategory) {
+                  categoryName = firstCategory.name as string || 'Uncategorized';
                 }
               } else if ('name' in post.category) {
                 // If it's an object with a name property
-                categoryName = post.category.name || 'Uncategorized';
+                categoryName = post.category.name as string || 'Uncategorized';
               }
             } else if (typeof post.category === 'string') {
               // If it's just a string
