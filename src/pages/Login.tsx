@@ -5,14 +5,15 @@ import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn, isLoading } = useSupabaseAuth();
   const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,33 +30,12 @@ const Login = () => {
       return;
     }
     
-    setIsLoading(true);
-    
-    // Simulate API request
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real app, you'd handle authentication here
-      console.log("Login attempt:", { email });
-      
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-        duration: 3000,
-      });
-      
-      // Redirect to home page
+      await signIn(email, password);
       navigate("/");
-      
     } catch (error) {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setIsLoading(false);
+      // Error is already handled in the signIn function
+      console.error("Login error:", error);
     }
   };
   
@@ -101,7 +81,7 @@ const Login = () => {
                 <label htmlFor="password" className="text-sm font-medium">
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                <Link to="/reset-password" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -148,7 +128,10 @@ const Login = () => {
             </div>
             
             <div className="grid grid-cols-2 gap-4 mt-6">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" type="button" onClick={() => toast({ 
+                title: "Not implemented", 
+                description: "Social login is not yet implemented." 
+              })}>
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -170,7 +153,10 @@ const Login = () => {
                 </svg>
                 Google
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" type="button" onClick={() => toast({ 
+                title: "Not implemented", 
+                description: "Social login is not yet implemented." 
+              })}>
                 <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
                 </svg>
