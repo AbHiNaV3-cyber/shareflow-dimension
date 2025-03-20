@@ -82,16 +82,27 @@ const Dashboard = () => {
 
         if (error) throw error;
         
-        const transformedPosts = (data || []).map(post => ({
-          id: post.id,
-          title: post.title,
-          slug: post.slug,
-          published_at: post.published_at,
-          created_at: post.created_at,
-          category: post.category && typeof post.category === 'object' 
-            ? { name: post.category.name || 'Uncategorized' }
-            : null
-        }));
+        const transformedPosts = (data || []).map(post => {
+          let categoryName = 'Uncategorized';
+          if (post.category) {
+            if (typeof post.category === 'object' && post.category !== null) {
+              if (Array.isArray(post.category)) {
+                categoryName = post.category[0]?.name || 'Uncategorized';
+              } else {
+                categoryName = post.category.name || 'Uncategorized';
+              }
+            }
+          }
+          
+          return {
+            id: post.id,
+            title: post.title,
+            slug: post.slug,
+            published_at: post.published_at,
+            created_at: post.created_at,
+            category: { name: categoryName }
+          };
+        });
         
         setPosts(transformedPosts);
       } catch (error) {

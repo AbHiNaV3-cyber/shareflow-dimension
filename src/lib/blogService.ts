@@ -1,4 +1,3 @@
-
 import { supabase } from './supabase';
 import { BlogPost, Author } from './api';
 import { BlogPostDB, CategoryDB, Profile } from './supabase';
@@ -43,10 +42,10 @@ const transformPost = async (post: BlogPostDB): Promise<BlogPost> => {
     .eq('post_id', post.id);
 
   // Fix: Properly extract tag names by checking the structure
-  const tags = tagsData?.map(tag => {
+  const tags: string[] = tagsData?.map(tag => {
     // Check if tags has the expected structure
     if (tag.tags && typeof tag.tags === 'object' && 'name' in tag.tags) {
-      return tag.tags.name;
+      return tag.tags.name as string;
     }
     return '';
   }).filter(Boolean) || [];
