@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle";
@@ -9,6 +9,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // We'll replace this with auth logic later
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +19,11 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header 
@@ -34,9 +40,9 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/" className="font-medium hover:text-primary">Home</Link>
-          <Link to="/categories" className="font-medium hover:text-primary">Categories</Link>
-          <Link to="/about" className="font-medium hover:text-primary">About</Link>
-          <Link to="/contact" className="font-medium hover:text-primary">Contact</Link>
+          <Link to="/category/technology" className="font-medium hover:text-primary">Technology</Link>
+          <Link to="/category/lifestyle" className="font-medium hover:text-primary">Lifestyle</Link>
+          <Link to="/category/health" className="font-medium hover:text-primary">Health</Link>
         </nav>
         
         {/* Actions */}
@@ -78,54 +84,76 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Fixed positioning instead of absolute */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-background z-40 animate-fade-in">
-          <div className="container p-4 flex flex-col space-y-6">
-            <nav className="flex flex-col space-y-4">
+        <div className="md:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background/95 backdrop-blur-md z-40 animate-fade-in overflow-y-auto">
+          <div className="container p-4 flex flex-col h-full">
+            <nav className="flex flex-col space-y-4 mb-8">
               <Link 
                 to="/" 
-                className="p-2 hover:bg-accent rounded-md font-medium"
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link 
-                to="/categories" 
-                className="p-2 hover:bg-accent rounded-md font-medium"
+                to="/category/technology" 
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Categories
+                Technology
+              </Link>
+              <Link 
+                to="/category/lifestyle" 
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Lifestyle
+              </Link>
+              <Link 
+                to="/category/health" 
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Health
               </Link>
               <Link 
                 to="/about" 
-                className="p-2 hover:bg-accent rounded-md font-medium"
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link 
                 to="/contact" 
-                className="p-2 hover:bg-accent rounded-md font-medium"
+                className="p-3 hover:bg-accent rounded-md font-medium transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
               </Link>
             </nav>
-            <div className="flex flex-col space-y-2">
+            
+            <div className="mt-auto pb-8">
+              <div className="flex items-center justify-between mb-4">
+                <button className="flex items-center space-x-2 p-3 hover:bg-accent rounded-md font-medium transition-colors w-full">
+                  <Search size={18} />
+                  <span>Search</span>
+                </button>
+              </div>
+              
               {isLoggedIn ? (
                 <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full" variant="outline">My Dashboard</Button>
                 </Link>
               ) : (
-                <>
+                <div className="flex flex-col space-y-3">
                   <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button className="w-full" variant="outline">Log in</Button>
                   </Link>
                   <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button className="w-full">Sign up</Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>

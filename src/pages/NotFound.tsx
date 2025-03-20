@@ -22,7 +22,7 @@ const NotFound = () => {
         <Header />
       </header>
       
-      <main className="flex-grow flex items-center justify-center py-16">
+      <main className="flex-grow flex items-center justify-center py-20 px-4 mt-12">
         <div className="container-narrow text-center">
           <div className="mb-8 flex justify-center">
             <div className="rounded-full bg-primary/10 p-6">
@@ -41,7 +41,7 @@ const NotFound = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/">
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2 w-full sm:w-auto">
                 <Home size={16} />
                 Return to Home
               </Button>
@@ -49,7 +49,7 @@ const NotFound = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
               onClick={() => window.history.back()}
             >
               <RefreshCw size={16} />
